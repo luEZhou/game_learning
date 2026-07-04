@@ -1,0 +1,36 @@
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 8
+PointerAlignment: Left
+BreakConstructorInitializers: AfterColon
+Standard: Cpp11
+TabWidth: 8
+UseTab: Always
+ColumnLimit: 0
+BinPackArguments: true
+ConstructorInitializerIndentWidth: 8
+ContinuationIndentWidth: 16
+AlignAfterOpenBracket: DontAlign
+AccessModifierOffset: -8
+BreakBeforeBraces: Custom
+ReflowComments: true
+SortIncludes: false
+#AllowAllArgumentsOnNextLine: true
+AlignOperands: false
+PenaltyBreakFirstLessLess: 100
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: false
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
