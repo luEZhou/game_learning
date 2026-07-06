@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Player.h"
+
 struct SDL_Window;
 struct SDL_Renderer;
 
@@ -23,4 +25,6 @@ private:
 	bool running_;
 	SDL_Window* window_;
 	SDL_Renderer* renderer_;
+
+	Player player_;
 };
