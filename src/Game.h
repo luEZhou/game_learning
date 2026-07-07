@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Player.h"
+#include <memory>
+#include <vector>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -26,5 +28,5 @@ private:
 	SDL_Window* window_;
 	SDL_Renderer* renderer_;
 
-	Player player_;
+	std::vector<std::unique_ptr<GameObject>> objects_;
 };

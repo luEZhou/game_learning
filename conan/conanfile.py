@@ -28,7 +28,6 @@ class GameConan(ConanFile):
     def build(self):
         #apply_conandata_patches(self)
         cmake = CMake(self)
-        cmake
         cmake.configure()
         cmake.build(target = "Game")
 
