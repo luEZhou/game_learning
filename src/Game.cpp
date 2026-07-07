@@ -17,11 +17,18 @@ bool Game::init()
 		return false;
 	}
 	running_ = true;
+
+	// 初始化 Player 对象
+	objects_.push_back(std::make_unique<Player>(100.0f, 100.0f, 50.0f, 50.0f, 300.0f));
+
 	return true;
 }
 
 void Game::shutdown()
 {
+	SDL_DestroyRenderer(renderer_);
+	SDL_DestroyWindow(window_);
+	SDL_Quit();
 }
 
 void Game::run()
@@ -70,29 +77,10 @@ void Game::process_input()
 
 void Game::update(float dt)
 {
-	const bool* state = SDL_GetKeyboardState(nullptr);
 
-	if (state[SDL_SCANCODE_W]) {
-		player_.y -= player_.speed * dt;
+	for (auto& object : objects_) {
+		object->update(dt);
 	}
-	if (state[SDL_SCANCODE_S]) {
-		player_.y += player_.speed * dt;
-	}
-	if (state[SDL_SCANCODE_A]) {
-		player_.x -= player_.speed * dt;
-	}
-	if (state[SDL_SCANCODE_D]) {
-		player_.x += player_.speed * dt;
-	}
-
-	if (player_.x < 0.0f)
-		player_.x = 0.0f;
-	if (player_.x > 1280.0f - 50.0f)
-		player_.x = 1280.0f - 50.0f;
-	if (player_.y < 0.0f)
-		player_.y = 0.0f;
-	if (player_.y > 720.0f - 50.0f)
-		player_.y = 720.0f - 50.0f;
 }
 
 void Game::render()
@@ -100,9 +88,9 @@ void Game::render()
 	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
 	SDL_RenderClear(renderer_);
 
-	SDL_FRect playerRect = {player_.x, player_.y, 50.0f, 50.0f};
-	SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
-	SDL_RenderFillRect(renderer_, &playerRect);
+	for (auto& object : objects_) {
+		object->render(renderer_);
+	}
 
 	SDL_FRect quitButtonRect = {1150.0f, 20.0f, 100.0f, 40.0f};
 	SDL_SetRenderDrawColor(renderer_, 150, 150, 150, 255);
