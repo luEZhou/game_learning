@@ -18,7 +18,6 @@ bool Game::init()
 	}
 	running_ = true;
 
-	// 初始化 Player 对象
 	objects_.push_back(std::make_unique<Player>(100.0f, 100.0f, 50.0f, 50.0f, 300.0f));
 
 	return true;

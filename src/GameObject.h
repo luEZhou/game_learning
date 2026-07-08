@@ -1,17 +1,19 @@
 #pragma once
 
+#include "Math/Vector2.h"
+
 struct SDL_Renderer;
 
 class GameObject {
 
 public:
 	GameObject(float x, float y, float width, float height) :
-		x_(x), y_(y), width_(width), height_(height) {}
+		position_(x, y), width_(width), height_(height) {}
 
 	virtual ~GameObject() {}
 
-	float getX() const { return x_; }
-	float getY() const { return y_; }
+	Vector2 position() const { return position_; }
+
 	float getWidth() const { return width_; }
 	float getHeight() const { return height_; }
 
@@ -20,8 +22,7 @@ public:
 	virtual void render(SDL_Renderer* renderer) = 0;
 
 protected:
-	float x_;
-	float y_;
+	Vector2 position_;
 	float width_;
 	float height_;
 };

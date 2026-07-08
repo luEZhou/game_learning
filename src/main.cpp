@@ -4,7 +4,7 @@
 int main()
 {
 
-	Game game;
+	Game game{};
 
 	if (!game.init()) {
 		return -1;
