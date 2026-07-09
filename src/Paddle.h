@@ -2,14 +2,14 @@
 
 #include "GameObject.h"
 
-class Player : public GameObject {
+class Paddle : public GameObject {
 
 public:
-	Player(float x, float y, float width, float height, float speed) :
+	Paddle(float x, float y, float width, float height, float speed) :
 		GameObject(x, y, width, height),
 		speed_(speed) {}
 
-	virtual ~Player() {}
+	virtual ~Paddle() {}
 
 	void update(float dt) override;
 
