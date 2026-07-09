@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Player.h"
 #include <memory>
 #include <vector>
+
+#include "GameObject.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -15,6 +16,8 @@ public:
 	void run();
 
 	void shutdown();
+
+	~Game() = default;
 
 private:
 	void process_input();

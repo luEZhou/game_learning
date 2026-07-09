@@ -2,6 +2,8 @@
 
 #include "SDL3/SDL.h"
 
+#include "Paddle.h"
+
 bool Game::init()
 {
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -18,7 +20,9 @@ bool Game::init()
 	}
 	running_ = true;
 
-	objects_.push_back(std::make_unique<Player>(100.0f, 100.0f, 50.0f, 50.0f, 300.0f));
+	objects_.push_back(std::make_unique<Paddle>(
+			(1280.0f - 100.0f) / 2.0f - 50.0f,
+			720.0f - 25.0f, 100.0f, 20.0f, 300.0f));
 
 	return true;
 }

@@ -1,19 +1,13 @@
-#include "Player.h"
+#include "Paddle.h"
 
 #include "SDL3/SDL.h"
 
-void Player::update(float dt)
+void Paddle::update(float dt)
 {
 	const bool* state = SDL_GetKeyboardState(nullptr);
 
 	Vector2 velocity{0.0f, 0.0f};
 
-	if (state[SDL_SCANCODE_W]) {
-		velocity.setY(-1.0f);
-	}
-	if (state[SDL_SCANCODE_S]) {
-		velocity.setY(1.0f);
-	}
 	if (state[SDL_SCANCODE_A]) {
 		velocity.setX(-1.0f);
 	}
@@ -37,7 +31,7 @@ void Player::update(float dt)
 		position_.setY(720.0f - height_);
 }
 
-void Player::render(SDL_Renderer* renderer)
+void Paddle::render(SDL_Renderer* renderer)
 {
 	SDL_FRect playerRect = {position_.X(), position_.Y(), width_, height_};
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
