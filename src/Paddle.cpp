@@ -23,17 +23,10 @@ void Paddle::update(float dt)
 
 	if (position_.X() < 0.0f)
 		position_.setX(0.0f);
-	if (position_.X() > 1280.0f - width_)
-		position_.setX(1280.0f - width_);
+	if (position_.X() > 1280.f - width_)
+		position_.setX(1280.f - width_);
 	if (position_.Y() < 0.0f)
 		position_.setY(0.0f);
-	if (position_.Y() > 720.0f - height_)
-		position_.setY(720.0f - height_);
-}
-
-void Paddle::render(SDL_Renderer* renderer)
-{
-	SDL_FRect playerRect = {position_.X(), position_.Y(), width_, height_};
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderFillRect(renderer, &playerRect);
+	if (position_.Y() > 720.f - height_ - 45)
+		position_.setY(720.f - height_ - 45);
 }

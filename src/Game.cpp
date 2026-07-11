@@ -1,28 +1,23 @@
 #include "Game.h"
 
-#include "SDL3/SDL.h"
+#include "SDL3_image/SDL_image.h"
 
 #include "Paddle.h"
+#include "Brick.h"
 
 bool Game::init()
 {
-	if (!SDL_Init(SDL_INIT_VIDEO)) {
+	if (!initSDL()) {
 		return false;
 	}
-	window_ = SDL_CreateWindow("Game_learning", 1280, 720, 0);
-	if (!window_) {
-		return false;
-	}
-	renderer_ = SDL_CreateRenderer(window_, nullptr);
-	if (!renderer_) {
-		SDL_DestroyWindow(window_);
-		return false;
-	}
-	running_ = true;
 
-	objects_.push_back(std::make_unique<Paddle>(
-			(1280.0f - 100.0f) / 2.0f - 50.0f,
-			720.0f - 25.0f, 100.0f, 20.0f, 300.0f));
+	if (!loadResources()) {
+		return false;
+	}
+
+	createLevel();
+
+	running_ = true;
 
 	return true;
 }
@@ -53,6 +48,16 @@ void Game::run()
 
 void Game::process_input()
 {
+	float mx, my;
+
+	SDL_GetMouseState(&mx, &my);
+
+	exitHover_ =
+			mx >= exitRect_.x &&
+			mx <= exitRect_.x + exitRect_.w &&
+			my >= exitRect_.y &&
+			my <= exitRect_.y + exitRect_.h;
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 
@@ -61,12 +66,8 @@ void Game::process_input()
 			running_ = false;
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (event.button.button == SDL_BUTTON_LEFT) {
-				float mouseX = event.button.x;
-				float mouseY = event.button.y;
-				if (mouseX >= 1150.0f && mouseX <= 1250.0f && mouseY >= 20.0f && mouseY <= 60.0f) {
-					running_ = false;
-				}
+			if (exitHover_) {
+				running_ = false;
 			}
 			break;
 		case SDL_EVENT_KEY_DOWN:
@@ -91,13 +92,151 @@ void Game::render()
 	SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
 	SDL_RenderClear(renderer_);
 
+	renderBackground();
+	renderObjects();
+	renderUI();
+
+	SDL_RenderPresent(renderer_);
+}
+
+bool Game::initSDL()
+{
+	if (!SDL_Init(SDL_INIT_VIDEO)) {
+		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		return false;
+	}
+
+	window_ = SDL_CreateWindow(
+			"Game_learning", 1280.f, 720.f, 0);
+	if (!window_) {
+		SDL_Log("Failed to create window: %s", SDL_GetError());
+		return false;
+	}
+
+	renderer_ = SDL_CreateRenderer(window_, nullptr);
+	if (!renderer_) {
+		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		SDL_DestroyWindow(window_);
+		return false;
+	}
+
+	return true;
+}
+
+bool Game::loadResources()
+{
+
+	if (!resources_.loadTexture(renderer_, "background", "assets/background.png")) {
+		SDL_Log("Failed to load background texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "paddle", "assets/paddle.png")) {
+		SDL_Log("Failed to load paddle texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "brick", "assets/brick_blue.png")) {
+		SDL_Log("Failed to load brick texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "hud_top", "assets/ui/hud_top.png")) {
+		SDL_Log("Failed to load hud_top texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "hud_bottom", "assets/ui/hud_bottom.png")) {
+		SDL_Log("Failed to load hud_bottom texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "button_exit", "assets/ui/button_exit.png")) {
+		SDL_Log("Failed to load button_exit texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "button_exit_hover", "assets/ui/button_exit_hover.png")) {
+		SDL_Log("Failed to load button_exit_hover texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "heart", "assets/ui/heart.png")) {
+		SDL_Log("Failed to load heart texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "panel", "assets/ui/panel.png")) {
+		SDL_Log("Failed to load panel texture");
+		return false;
+	}
+
+	return true;
+}
+
+void Game::createLevel()
+{
+	createPaddle();
+	createBricks();
+}
+
+void Game::createPaddle()
+{
+	spawn<Paddle>(
+			resources_.getTexture("paddle"),
+			(1280.0f - 100.0f) / 2.0f - 60.0f,
+			720.0f - 25.0f - 45.0f, 120.0f, 20.0f, 300.0f);
+}
+
+void Game::createBricks()
+{
+	Texture2D* brick = resources_.getTexture("brick");
+
+	constexpr int rows{5};
+	constexpr int cols{10};
+	constexpr float brickWidth{108.f};
+	constexpr float brickHeight{32.f};
+	// constexpr float gap{2.f};
+
+	for (int row = 0; row < rows; ++row) {
+		for (int col = 0; col < cols; ++col) {
+			spawn<Brick>(
+					brick,
+					100.f + col * brickWidth,
+					75.f + row * brickHeight,
+					brickWidth,
+					brickHeight);
+		}
+	}
+}
+
+void Game::renderBackground()
+{
+	auto bg = resources_.getTexture("background");
+	bg->draw(renderer_, {0, 0, 1280, 720});
+}
+
+void Game::renderObjects()
+{
 	for (auto& object : objects_) {
 		object->render(renderer_);
 	}
+}
 
-	SDL_FRect quitButtonRect = {1150.0f, 20.0f, 100.0f, 40.0f};
-	SDL_SetRenderDrawColor(renderer_, 150, 150, 150, 255);
-	SDL_RenderFillRect(renderer_, &quitButtonRect);
+void Game::renderUI()
+{
+	resources_.getTexture("hud_top")->draw(renderer_, {0, 0, 1280, 70});
 
-	SDL_RenderPresent(renderer_);
+	resources_.getTexture("hud_bottom")->draw(renderer_, {0, 675, 1280, 45});
+
+	auto* exitTexture = exitHover_
+			? resources_.getTexture("button_exit_hover")
+			: resources_.getTexture("button_exit");
+
+	exitTexture->draw(renderer_, exitRect_);
+
+	for (int i = 0; i < lives_; i++) {
+		resources_.getTexture("heart")->draw(
+				renderer_, {20.f + i * 40.f, 10.f, 32.f, 32.f});
+	}
 }

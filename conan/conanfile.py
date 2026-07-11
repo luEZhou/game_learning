@@ -24,11 +24,13 @@ class GameConan(ConanFile):
 
     def requirements(self):
         self.requires("sdl/3.4.8")
+        self.requires("sdl_image/3.4.4")
 
     def build(self):
         #apply_conandata_patches(self)
         cmake = CMake(self)
         cmake.configure()
         cmake.build(target = "Game")
+        cmake.install()
 
     
