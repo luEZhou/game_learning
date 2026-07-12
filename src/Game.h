@@ -45,6 +45,8 @@ private:
 
 	void createBricks();
 
+	void createBall();
+
 	void renderBackground();
 
 	void renderObjects();

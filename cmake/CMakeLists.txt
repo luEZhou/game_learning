@@ -13,9 +13,10 @@ set(Engine_SRC ${GM_SRC}/Engine/Math/Vector2.cpp
     ${GM_SRC}/Engine/Graphics/Texture2D.cpp
     ${GM_SRC}/Engine/ResourceManager.cpp)
 
-set(GAME_SRC    ${Engine_SRC}       ${GM_SRC}/Brick.cpp
-                ${GM_SRC}/Game.cpp  ${GM_SRC}/GameObject.cpp
-                ${GM_SRC}/main.cpp  ${GM_SRC}/Paddle.cpp)
+set(GAME_SRC    ${Engine_SRC}               ${GM_SRC}/Ball.cpp 
+                ${GM_SRC}/Brick.cpp         ${GM_SRC}/Game.cpp  
+                ${GM_SRC}/GameObject.cpp    ${GM_SRC}/main.cpp  
+                ${GM_SRC}/Paddle.cpp)
 
 add_executable(Game ${GAME_SRC})
 target_include_directories(Game PRIVATE ${GM_SRC}/Engine)
