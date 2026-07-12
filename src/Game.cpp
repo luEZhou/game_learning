@@ -4,6 +4,7 @@
 
 #include "Paddle.h"
 #include "Brick.h"
+#include "Ball.h"
 
 bool Game::init()
 {
@@ -119,6 +120,7 @@ bool Game::initSDL()
 		SDL_DestroyWindow(window_);
 		return false;
 	}
+	SDL_SetRenderVSync(renderer_, 1);
 
 	return true;
 }
@@ -138,6 +140,11 @@ bool Game::loadResources()
 
 	if (!resources_.loadTexture(renderer_, "brick", "assets/brick_blue.png")) {
 		SDL_Log("Failed to load brick texture");
+		return false;
+	}
+
+	if (!resources_.loadTexture(renderer_, "ball", "assets/ball.png")) {
+		SDL_Log("Failed to load ball texture");
 		return false;
 	}
 
@@ -178,6 +185,7 @@ void Game::createLevel()
 {
 	createPaddle();
 	createBricks();
+	createBall();
 }
 
 void Game::createPaddle()
@@ -208,6 +216,15 @@ void Game::createBricks()
 					brickHeight);
 		}
 	}
+}
+
+void Game::createBall()
+{
+	spawn<Ball>(
+			resources_.getTexture("ball"),
+			(1280.f - 100.f) / 2.0f - 10.f,
+			720.f - 25.0f - 45.0f - 20.0f,
+			20.0f, 20.0f, 300.0f);
 }
 
 void Game::renderBackground()
