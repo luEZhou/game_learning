@@ -32,8 +32,8 @@ void Ball::update(float dt)
 		velocity_.setY(-velocity_.Y());
 	}
 
-	if (position_.Y() >= 720.0f - height_) {
-		position_.setY(720.0f - height_);
+	if (position_.Y() >= 720.0f - 20.f - 45.f - height_) {
+		position_.setY(720.0f - 20.f - 45.f - height_);
 		velocity_.setY(-velocity_.Y());
 	}
 }
